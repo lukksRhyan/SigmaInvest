@@ -1,7 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import models
 
-from assets.models import Asset
 
 User = get_user_model()
 # Create your models here.
@@ -9,7 +8,7 @@ class Portfolio(models.Model):
     username = models.OneToOneField(User, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"Carteira de {self.user}"
+        return f"Carteira de {self.username}"
 
 class PortfolioAsset(models.Model):
     portfolio = models.ForeignKey(Portfolio, on_delete=models.CASCADE)
