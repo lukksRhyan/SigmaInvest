@@ -1,19 +1,15 @@
 from django.db import models
-
+import requests
+import assets.api_connection as api
 # Create your models here.
-class Asset(models.Model):
-    ASSET_TYPES = [
-        ('stock', 'Ação'),
-        ('crypto', 'Criptomoeda'),
-        ('bond', 'Título'),
-        ('real_estate', 'Fundo Imobilia'),
-    ]
-    name = models.CharField(max_length=100)
-    ticker = models.CharField(max_length=10)
-    type = models.CharField(choices=ASSET_TYPES, max_length=20)
-    sector = models.CharField(max_length=100,blank=True)
+class Assets:
 
-    def __str__(self):
-        return f"{self.name} {self.ticker}"
+    def __init__(self, ticker):
+        self.ticker = ticker.upper()
+        self.data = api.ApiConnection().get_asset_data_by_ticker(ticker)
 
 
+
+
+    def try_quote(self):
+        pass

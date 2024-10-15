@@ -10,6 +10,7 @@ class Portfolio(models.Model):
     def __str__(self):
         return f"Carteira de {self.username}"
 
+
 class PortfolioAsset(models.Model):
     portfolio = models.ForeignKey(Portfolio, on_delete=models.CASCADE)
     ticker = models.CharField(max_length=10)

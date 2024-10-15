@@ -6,5 +6,41 @@
 </head>
 <body>
 <h1>Olá, {{username}}</h1>
+
+  <fieldset>
+        <legend>Procurar ações</legend>
+        <label for="tickerfield">Ticker das ações</label>
+        <input type="text" name="ticker" id="tickerfield">
+        <button id="searchBtn">Buscar</button>
+    </fieldset>
+<script>
+        document.getElementById('searchBtn').addEventListener('click', function() {
+            const ticker = document.getElementById('tickerfield').value;
+            const token = 'seu_token';  // Substitua pelo seu token de API
+
+            if (ticker) {
+                fetch(`https://brapi.dev/api/list?search=${ticker}&token=${token}`)
+                .then(response => response.json())
+                .then(data => {
+                    let resultDiv = document.getElementById('results');
+                    resultDiv.innerHTML = '';  // Limpa os resultados anteriores
+
+                    if (data && data.stocks && data.stocks.length > 0) {
+                        data.stocks.forEach(stock => {
+                            let stockInfo = `<p>${stock.symbol} - ${stock.name}: ${stock.close} (Último fechamento)</p>`;
+                            resultDiv.innerHTML += stockInfo;
+                        });
+                    } else {
+                        resultDiv.innerHTML = '<p>Nenhum resultado encontrado</p>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro ao buscar ações:', error);
+                });
+            } else {
+                alert('Por favor, insira um ticker!');
+            }
+        });
+    </script>
 </body>
 </html>
