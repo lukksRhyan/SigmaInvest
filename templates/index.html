@@ -13,21 +13,22 @@
         <input type="text" name="ticker" id="tickerfield">
         <button id="searchBtn">Buscar</button>
     </fieldset>
+<div id="results"></div>
 <script>
         document.getElementById('searchBtn').addEventListener('click', function() {
             const ticker = document.getElementById('tickerfield').value;
-            const token = 'seu_token';  // Substitua pelo seu token de API
+            const token = "{{token}}";
 
             if (ticker) {
-                fetch(`https://brapi.dev/api/list?search=${ticker}&token=${token}`)
+                fetch(`https://brapi.dev/api/quote/list?search=${ticker}&token=${token}`)
                 .then(response => response.json())
                 .then(data => {
                     let resultDiv = document.getElementById('results');
-                    resultDiv.innerHTML = '';  // Limpa os resultados anteriores
+                    resultDiv.innerHTML = '';
 
                     if (data && data.stocks && data.stocks.length > 0) {
                         data.stocks.forEach(stock => {
-                            let stockInfo = `<p>${stock.symbol} - ${stock.name}: ${stock.close} (Último fechamento)</p>`;
+                            let stockInfo = `<div><p>${stock.stock} - ${stock.name}: ${stock.close} (Último fechamento)</p> <button>Adicionar</button></div>`;
                             resultDiv.innerHTML += stockInfo;
                         });
                     } else {

@@ -7,13 +7,17 @@ User = get_user_model()
 class Portfolio(models.Model):
     username = models.OneToOneField(User, on_delete=models.CASCADE)
 
+    def __innit__(self,username):
+        self.username = username
+
     def __str__(self):
         return f"Carteira de {self.username}"
 
 
+
 class PortfolioAsset(models.Model):
     portfolio = models.ForeignKey(Portfolio, on_delete=models.CASCADE)
-    ticker = models.CharField(max_length=10)
+    ticker = models.CharField(max_length=10, null=True, blank=True)
     quantity =  models.DecimalField(max_digits=10, decimal_places=2)
     average_price = models.DecimalField(max_digits=10,decimal_places=2)
 

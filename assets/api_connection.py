@@ -29,7 +29,6 @@ class ApiConnection:
     def search_by_ticker(self,ticker)->list:
         endpoint = "list/"
         params = {'search': ticker}
-        url =self.construct_url(endpoint,params)
         response = requests.get(self.construct_url(endpoint,params))
         if response.status_code == 200:
             return response.json()
