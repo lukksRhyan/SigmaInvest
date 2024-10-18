@@ -5,8 +5,20 @@
     <title>Title</title>
 </head>
 <body>
-<h1>Olá, {{username}}</h1>
+<h1>Olá, {{user.username}}</h1>
 
+  <div>
+      <fieldset>
+        <legend>Suas carteiras:</legend>
+      {% if not portfolios.count%}
+          <p>Nenhuma Carteira encontrada</p>
+      {% else %}
+        {% for entry in portifolios %}
+        <p>{{entry}}</p>
+        {% endfor %}
+      {% endif %}
+      </fieldset>
+  </div>
   <fieldset>
         <legend>Procurar ações</legend>
         <label for="tickerfield">Ticker das ações</label>
@@ -28,7 +40,12 @@
 
                     if (data && data.stocks && data.stocks.length > 0) {
                         data.stocks.forEach(stock => {
-                            let stockInfo = `<div><p>${stock.stock} - ${stock.name}: ${stock.close} (Último fechamento)</p> <button>Adicionar</button></div>`;
+                            let stockInfo =
+                                `<div style="display: flex; align-items: center; justify-content: space-around;">
+                                    <p>${stock.type} / ${stock.sector}</p>
+                                    <p>${stock.stock} - ${stock.name}: ${stock.close} (Último fechamento)</p>
+                                     <button>Adicionar</button>
+                                 </div>`;
                             resultDiv.innerHTML += stockInfo;
                         });
                     } else {

@@ -5,14 +5,21 @@ from django.db import models
 User = get_user_model()
 # Create your models here.
 class Portfolio(models.Model):
-    username = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    title = models.CharField(max_length=100, default=f"carteira de {user}")
 
-    def __innit__(self,username):
-        self.username = username
+    def __innit__(self,username,title):
+        self.user = username
+        self.title = title
 
     def __str__(self):
-        return f"Carteira de {self.username}"
+        return f"""
+        Título da carteira: {self.title}
+        Ativos: {[]}
+        """
 
+    def get_all_assets(self):
+        return PortfolioAsset.objects.filter(portfolio=self)
 
 
 class PortfolioAsset(models.Model):

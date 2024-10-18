@@ -19,7 +19,7 @@ class ApiConnection:
         return f"{url}?{query_string}"
 
     def get_asset_data_by_ticker(self,ticker):
-        endpoint = "quote/"
+        endpoint = endpoint_by_classification("STOCK")
         params = {'symbol': ticker}
         response = requests.get(self.construct_url(endpoint,params))
         if response.status_code == 200:
@@ -34,3 +34,7 @@ class ApiConnection:
             return response.json()
         return []
 
+def endpoint_by_classification(classification)->str:
+    if classification == "STOCK":
+      return "quote/"
+    pass
