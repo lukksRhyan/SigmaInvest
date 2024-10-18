@@ -1,37 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-<h1>Olá, {{user.username}}</h1>
-
-  <div>
-      <fieldset>
-        <legend>Suas carteiras:</legend>
-      {% if not portfolios.count%}
-          <p>Nenhuma Carteira encontrada</p>
-      {% else %}
-        {% for entry in portifolios %}
-        <p>{{entry}}</p>
-        {% endfor %}
-      {% endif %}
-      <button id="portfolioCreateBtn"></button>
-      <div id="portfolioCreateModal" class="modal fade">
-
-      </div>
-      </fieldset>
-  </div>
-  <fieldset>
-        <legend>Procurar ações</legend>
-        <label for="tickerfield">Ticker das ações</label>
-        <input type="text" name="ticker" id="tickerfield">
-        <button id="searchBtn">Buscar</button>
-    </fieldset>
-<div id="results"></div>
-<script>
-        document.getElementById('searchBtn').addEventListener('click', function() {
+document.getElementById('searchBtn').addEventListener('click', function() {
             const ticker = document.getElementById('tickerfield').value;
             const token = "{{token}}";
 
@@ -63,16 +30,3 @@
                 alert('Por favor, insira um ticker!');
             }
         });
-        document.getElementById('portfolioCreateBtn').addEventListener('click', function() {
-            let modal = document.getElementById('portfolioCreateModal');
-            modal.innerHTML = '' +
-                '' +
-                '<form id="portfolioCreateForm">' +
-                '<input type="text" name="" id="">'+
-                '</form>';
-
-
-        });
-    </script>
-</body>
-</html>

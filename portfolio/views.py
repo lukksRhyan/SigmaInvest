@@ -1,31 +1,40 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth.models import User
-from django.contrib.auth import login
-from .models import Portfolio
-from asset import api_connection
-from portfolio.forms import UserRegisterForm
+from rest_framework import generics, permissions
+from .models import Portfolio,PortfolioAsset
+from .serializers import PortfolioSerializer,PortfolioAssetSerializer
 
-def main_page(request):
-    if request.user.is_authenticated:
-        portfolios = Portfolio.objects.filter(user=request.user)
+class PortfolioListCreateView(generics.ListCreateAPIView):
+    serializer_class = PortfolioSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
-        assets = []
-        for result in portfolios:
-            assets.append(result.get_all_assets())
-        token = api_connection.ApiConnection().token
-        return render(request,'index.html',{'user':request.user,"token":token,'portfolios':portfolios},)
+    def get_queryset(self):
+        return Portfolio.objects.filter(owner=self.request.user)
 
-    return redirect('login')
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
 
-def user_register(request):
-    if request.method == 'POST':
-        form = UserRegisterForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            Portfolio.objects.create(username=user.username)
-            login(request, user)
-            return redirect('/')
-    else:
-        form = UserRegisterForm()
+class PortfolioDetailView(generics.RetrieveUpdateAPIView):
+        serializer_class = PortfolioSerializer
+        permission_classes = [permissions.IsAuthenticated]
 
-    return render(request, 'users/signup.html', {'form': form})
+        def get_queryset(self):
+            return Portfolio.objects.filter(owner=self.request.user)
+
+class PortfolioAssetListCreateView(generics.ListCreateAPIView):
+    serializer_class = PortfolioAssetSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        portfolio_id = self.kwargs['portfolio_id']
+        return PortfolioAsset.objects.filter(portfolio_id=portfolio_id)
+
+    def perform_create(self, serializer):
+        portfolio = Portfolio.objects.get(id=self.kwargs['portfolio_id'])
+        serializer.save(portfolio=portfolio)
+
+class PortfolioAssetDetailView(generics.RetrieveUpdateAPIView):
+    serializer_class = PortfolioAssetSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    def get_queryset(self):
+        portfolio_id = self.kwargs['portfolio_id']
+        return PortfolioAsset.objects.filter(portfolio_id=portfolio_id)
+    
