@@ -25,5 +25,5 @@ urlpatterns = [
     path('signup/', user_views.user_register, name='signup'),
     path('index/', user_views.main_page, name='index'),
 
-    path('',include('portfolio.urls')),
+    path('api/',include('api.urls')),
 ]
