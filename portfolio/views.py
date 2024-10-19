@@ -1,4 +1,4 @@
-from rest_framework import generics, permissions
+from rest_framework import generics
 from .models import Portfolio,PortfolioAsset
 from .serializers import PortfolioSerializer,PortfolioAssetSerializer
 
@@ -6,20 +6,19 @@ class PortfolioListCreateView(generics.ListCreateAPIView):
     serializer_class = PortfolioSerializer
 
     def get_queryset(self):
-        return Portfolio.objects.filter(user=self.request.POST.get('user'))
+        return Portfolio.objects.filter(user=self.request.GET.get('user'))
 
     def perform_create(self, serializer):
-        serializer.save(user=self.request.POST.get('user'))
+        serializer.save(user=self.request.GET.get('user'))
 
 class PortfolioDetailView(generics.RetrieveUpdateAPIView):
         serializer_class = PortfolioSerializer
 
         def get_queryset(self):
-            return Portfolio.objects.filter(user=self.request.POST.get('user'))
+            return Portfolio.objects.filter(user=self.request.GET.get('user'))
 
 class PortfolioAssetListCreateView(generics.ListCreateAPIView):
     serializer_class = PortfolioAssetSerializer
-    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         portfolio_id = self.kwargs['portfolio_id']

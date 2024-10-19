@@ -3,13 +3,13 @@ from django.db import models
 
 
 User = get_user_model()
-# Create your models here.
+
 class Portfolio(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=100, default=f"carteira de {user}")
 
-    def __innit__(self,username,title):
-        self.user = username
+    def __innit__(self,user_id,title):
+        self.user = User.objects.get(pk=user_id)
         self.title = title
 
     def __str__(self):
