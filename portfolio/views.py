@@ -6,7 +6,7 @@ class PortfolioListCreateView(generics.ListCreateAPIView):
     serializer_class = PortfolioSerializer
 
     def get_queryset(self):
-        return Portfolio.objects.filter(user=self.request.GET.get('user'))
+        return Portfolio.objects.all()
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.GET.get('user'))
@@ -15,6 +15,7 @@ class PortfolioDetailView(generics.RetrieveUpdateAPIView):
         serializer_class = PortfolioSerializer
 
         def get_queryset(self):
+            portfolio_id = self.kwargs['portfolio_id']
             return Portfolio.objects.filter(user=self.request.GET.get('user'))
 
 class PortfolioAssetListCreateView(generics.ListCreateAPIView):

@@ -6,11 +6,12 @@ User = get_user_model()
 
 class Portfolio(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    title = models.CharField(max_length=100, default=f"carteira de {user}")
+
+    title = models.CharField(max_length=100, default=f"carteira")
 
     def __innit__(self,user_id,title):
         self.user = User.objects.get(pk=user_id)
-        self.title = title
+        self.title = title or f"carteira de {self.user.username}"
 
     def __str__(self):
         return f"""
