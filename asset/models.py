@@ -4,10 +4,13 @@ import asset.api_connection as api
 # Create your models here.
 class AssetSector(models.Model):
     sector = models.CharField(max_length=10, unique=True, null=False)
-
+    def __init__(self, sector):
+        self.sector = sector.upper()
 
 class AssetClassification(models.Model):
     classification = models.CharField(max_length=10, unique=True, null=False)
+    def __init__(self, classification):
+        self.classification = classification.upper()
 
 class Asset(models.Model):
     ticker = models.CharField(max_length=10, unique=True, null=False)
