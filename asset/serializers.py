@@ -4,7 +4,7 @@ from .models import Asset,AssetSector,AssetClassification
 class AssetSerializer(serializers.ModelSerializer):
     class Meta:
         model = Asset
-        fields = ['id','ticker','sector_id','classification_id']
+        fields = ['id','ticker','sector','classification']
 
 class AssetSectorSerializer(serializers.ModelSerializer):
     class Meta:
