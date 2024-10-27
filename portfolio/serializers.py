@@ -5,7 +5,7 @@ class PortfolioAssetSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PortfolioAsset
-        fields = ['id','ticker','portfolio','quantity','average_price']
+        fields = ['id','asset','portfolio','quantity','average_price']
 
 class PortfolioSerializer(serializers.ModelSerializer):
 

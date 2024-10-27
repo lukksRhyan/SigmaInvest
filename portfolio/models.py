@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import models
-
+from asset.models import Asset
 
 User = get_user_model()
 
@@ -14,10 +14,7 @@ class Portfolio(models.Model):
         self.title = title or f"carteira de {self.user.username}"
 
     def __str__(self):
-        return f"""
-        Título da carteira: {self.title}
-        Ativos: {[]}
-        """
+        return f"""{self.title}@{self.user}"""
 
     def get_all_assets(self):
         return PortfolioAsset.objects.filter(portfolio=self)
@@ -25,10 +22,10 @@ class Portfolio(models.Model):
 
 class PortfolioAsset(models.Model):
     portfolio = models.ForeignKey(Portfolio, on_delete=models.CASCADE)
-    ticker = models.CharField(max_length=10, null=True, blank=True)
+    asset = models.ForeignKey(Asset, on_delete= models.CASCADE)
     quantity =  models.DecimalField(max_digits=10, decimal_places=2)
     average_price = models.DecimalField(max_digits=10,decimal_places=2)
 
 
     def __str__(self):
-        return f"total de {self.ticker} na {self.portfolio}"
+        return f"total de {self.asset} na {self.portfolio}"

@@ -9,7 +9,7 @@ class PortfolioListCreateView(generics.ListCreateAPIView):
         return Portfolio.objects.all()
 
     def perform_create(self, serializer):
-        serializer.save(user=self.request.GET.get('user'))
+        serializer.save()
 
 class PortfolioDetailView(generics.RetrieveUpdateAPIView):
         serializer_class = PortfolioSerializer

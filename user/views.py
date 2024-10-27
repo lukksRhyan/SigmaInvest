@@ -23,9 +23,9 @@ def user_register(request):
         form = UserRegisterForm(request.POST)
         if form.is_valid():
             user = form.save()
-
+            
             login(request, user)
-            return render(request, 'index.html', {'user': user, "token": "token", 'portfolios': [portifolio]}, )
+            return render(request, 'index.html', {'user': user, "token": "token", 'portfolios': [Portfolio()]}, )
 
     else:
         form = UserRegisterForm()
