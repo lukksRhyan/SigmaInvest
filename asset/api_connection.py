@@ -5,7 +5,7 @@ from urllib.parse import urljoin, urlencode
 class ApiConnection:
     def __init__(self):
         self.base_url = 'https://brapi.dev/api/'
-        self.token = "7AYrqS5jDLBXnrturQkFcj"
+        self.token = ""
 
     def __str__(self):
         pass
