@@ -20,6 +20,8 @@ class Asset(models.Model):
     sector = models.ForeignKey(AssetSector, on_delete=models.CASCADE, null=False)
     classification = models.ForeignKey(AssetClassification, on_delete=models.CASCADE, null=False)
 
+
+
     def __str__(self):
         return self.ticker
 

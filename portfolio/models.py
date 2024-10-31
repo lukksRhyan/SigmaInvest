@@ -8,6 +8,7 @@ class Portfolio(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     title = models.CharField(max_length=100, default=f"carteira")
+    followers = models.DecimalField(max_digits=10,decimal_places=0,default=0)
 
     def __innit__(self,title):
         self.title = title or f"carteira de {self.user.username}"
@@ -46,3 +47,5 @@ class PortfolioAsset(models.Model):
         else:
             super().save(*args, **kwargs)
 
+class Following(models.Model):
+    pass
