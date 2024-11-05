@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 
-from portfolio.models import Portfolio
+from portfolio.models import Portfolio, User
 from asset import api_connection
 from portfolio.forms import UserRegisterForm
 
@@ -44,3 +44,20 @@ class CustomLoginView(APIView):
             token = Token.objects.get_or_create(user=user)
             return Response({'token':token.key})
         return Response({'error':'Invalid Credentials'}, status=400)
+
+class CustomRegisterView(APIView):
+    def post(self, request,*args, **kwargs):
+        username = request.data.get("username")
+        password = request.data.get("password")
+        email = request.data.get("email")
+
+        if not all([username,password,email]):
+            return Response({'error':'Preencha todos os campos'}, status=400)
+        if User.objects.filter(username=username).exists():
+            return Response({'error':'Usuário já cadastrado'}, status=400)
+
+        user = User.objects.create_user(username=username, password=password, email=email)
+
+        token,created = Token.objects.get_or_create(user=user)
+
+        return Response({'token':token.key}, status=201)
