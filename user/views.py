@@ -41,6 +41,7 @@ class CustomLoginView(APIView):
     def post(self, request,*args, **kwargs):
         username = request.data.get("username")
         password = request.data.get("password")
+        print("\n".join([username,password]))
         user = authenticate(username=username, password=password)
         if user:
             token = Token.objects.get_or_create(user=user)
@@ -52,7 +53,7 @@ class CustomRegisterView(APIView):
         username = request.data.get("username")
         password = request.data.get("password")
         email = request.data.get("email")
-
+        print("\n".join([username,password,email]))
         if not all([username,password,email]):
             return Response({'error':'Preencha todos os campos'}, status=400)
         if User.objects.filter(username=username).exists():
