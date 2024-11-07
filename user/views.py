@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
@@ -60,4 +62,17 @@ class CustomRegisterView(APIView):
 
         token,created = Token.objects.get_or_create(user=user)
 
-        return Response({'token':token.key}, status=201)
+        return Response({'token':token.key}, status=201 )
+
+class UserDetailView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        user_data= {
+            "id":user.id,
+            "username":user.username,
+            "email":user.email,
+        }
+        return Response(user_data)
