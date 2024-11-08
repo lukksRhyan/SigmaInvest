@@ -32,4 +32,10 @@ class PortfolioAssetDetailView(generics.RetrieveUpdateAPIView):
     def get_queryset(self):
         portfolio_id = self.kwargs['portfolio_id']
         return PortfolioAsset.objects.filter(portfolio_id=portfolio_id)
+
+class PortfolioByUserView(generics.ListAPIView):
+    serializer_class = PortfolioSerializer
+    def get_queryset(self):
+        user_id = self.kwargs['id']
+        return Portfolio.objects.filter(user_id=user_id)
     
