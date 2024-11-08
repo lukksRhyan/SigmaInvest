@@ -41,19 +41,19 @@ class CustomLoginView(APIView):
     def post(self, request,*args, **kwargs):
         username = request.data.get("username")
         password = request.data.get("password")
-        print("\n".join([username,password]))
         user = authenticate(username=username, password=password)
         if user:
-            token = Token.objects.get_or_create(user=user)
+            token = Token.objects.get_or_create(user=user)[0]
             return Response({'token':token.key})
         return Response({'error':'Invalid Credentials'}, status=400)
 
 class CustomRegisterView(APIView):
     def post(self, request,*args, **kwargs):
+
         username = request.data.get("username")
         password = request.data.get("password")
         email = request.data.get("email")
-        print("\n".join([username,password,email]))
+
         if not all([username,password,email]):
             return Response({'error':'Preencha todos os campos'}, status=400)
         if User.objects.filter(username=username).exists():
@@ -69,7 +69,7 @@ class UserDetailView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
-    def get(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         user = request.user
         user_data= {
             "id":user.id,
