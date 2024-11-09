@@ -1,4 +1,5 @@
 from rest_framework import generics
+from rest_framework.permissions import IsAuthenticated
 from .models import Portfolio,PortfolioAsset
 from asset.models import Asset
 from .serializers import PortfolioSerializer,PortfolioAssetSerializer
@@ -35,6 +36,8 @@ class PortfolioAssetDetailView(generics.RetrieveUpdateAPIView):
 
 class PortfolioByUserView(generics.ListAPIView):
     serializer_class = PortfolioSerializer
+    permission_classes = [IsAuthenticated]
+
     def get_queryset(self):
         user_id = self.kwargs['id']
         return Portfolio.objects.filter(user_id=user_id)
