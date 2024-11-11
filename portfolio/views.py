@@ -1,4 +1,6 @@
+from requests import Response
 from rest_framework import generics
+from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from .models import Portfolio,PortfolioAsset
 from asset.models import Asset
@@ -36,9 +38,12 @@ class PortfolioAssetDetailView(generics.RetrieveUpdateAPIView):
 
 class PortfolioByUserView(generics.ListAPIView):
     serializer_class = PortfolioSerializer
+    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
+    def post(self, request, *args, **kwargs):
+        return Response(Portfolio.objects.filter(user=request.user))
+
     def get_queryset(self):
-        user_id = self.kwargs['id']
-        return Portfolio.objects.filter(user_id=user_id)
+        return Portfolio.objects.filter(user=self.request.user)
     
