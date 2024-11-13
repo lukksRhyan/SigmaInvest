@@ -41,9 +41,6 @@ class PortfolioByUserView(generics.ListAPIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
-    def post(self, request, *args, **kwargs):
-        return Response(Portfolio.objects.filter(user=request.user))
-
     def get_queryset(self):
-        return Portfolio.objects.filter(user=self.request.user)
+        return Portfolio.objects.filter(user=self.request.user.id)
     
