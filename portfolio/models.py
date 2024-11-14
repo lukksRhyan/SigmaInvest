@@ -6,12 +6,14 @@ User = get_user_model()
 
 class Portfolio(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-
+    total = models.DecimalField(max_digits=15, decimal_places=7)
+    appreciation = models.DecimalField(max_digits=15, decimal_places=7)
     title = models.CharField(max_length=100, default=f"carteira")
     followers = models.DecimalField(max_digits=10,decimal_places=0,default=0)
 
     def __innit__(self,title):
         self.title = title or f"carteira de {self.user.username}"
+        self.total
 
     def __str__(self):
         return f"""{self.title}@{self.user}"""
