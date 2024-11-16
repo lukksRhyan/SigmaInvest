@@ -8,7 +8,8 @@ class PortfolioAssetSerializer(serializers.ModelSerializer):
         fields = ['asset','portfolio','quantity','average_price']
 
 class PortfolioSerializer(serializers.ModelSerializer):
+    user = serializers.CharField(source='user.username')
 
     class Meta:
         model = Portfolio
-        fields = ['id','user','title']
+        fields = ['id','user','title', 'total', 'appreciation']
