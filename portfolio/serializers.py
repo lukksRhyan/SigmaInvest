@@ -8,9 +8,9 @@ class PortfolioAssetSerializer(serializers.ModelSerializer):
         fields = ['asset','portfolio','quantity','average_price']
 
 class PortfolioSerializer(serializers.ModelSerializer):
-    user = serializers.CharField(source='user.username',read_only=True)
-    total = serializers.DecimalField(max_digits=10, decimal_places=2)
-    appreciation = serializers.DecimalField(max_digits=10, decimal_places=2)
+    user = serializers.CharField(source='user.username')
+    total = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
+    appreciation = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
 
     def update(self, instance, validated_data):
         instance.title = validated_data.get('title', instance.title)

@@ -36,6 +36,7 @@ class PortfolioAssetDetailView(generics.RetrieveUpdateAPIView):
         portfolio_id = self.kwargs['portfolio_id']
         return PortfolioAsset.objects.filter(portfolio_id=portfolio_id)
 
+
 class PortfolioByUserView(generics.ListAPIView):
     serializer_class = PortfolioSerializer
     authentication_classes = [TokenAuthentication]
