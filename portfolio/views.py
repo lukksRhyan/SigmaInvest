@@ -1,7 +1,9 @@
-from requests import Response
-from rest_framework import generics
+from rest_framework.response import Response
+from rest_framework import generics, status
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
+
 from .models import Portfolio,PortfolioAsset
 from asset.models import Asset
 from .serializers import PortfolioSerializer,PortfolioAssetSerializer
@@ -44,4 +46,17 @@ class PortfolioByUserView(generics.ListAPIView):
 
     def get_queryset(self):
         return Portfolio.objects.filter(user=self.request.user.id)
-    
+
+class CreatePortfolioView(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
+
+    def post(self, request):
+        user = request.user
+        title = request.data.get('title', f'carteira de {user}')
+
+        portfolio = Portfolio.objects.create(user=user,title=title)
+
+        serializer = PortfolioSerializer(portfolio)
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
