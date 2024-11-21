@@ -9,4 +9,5 @@ urlpatterns =[
     path('<int:portfolio_id>/assets', PortfolioAssetListCreateView.as_view(), name='portfolio-asset-list-create'),
     path('<int:portfolio_id>/assets', PortfolioAssetDetailView.as_view(), name='portfolio-asset-detail'),
     path('byuser/',PortfolioByUserView.as_view(), name='portfolio-by-user'),
+    path('create/', CreatePortfolioView.as_view(), name='portfolio-create'),
 ]

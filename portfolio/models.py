@@ -6,7 +6,7 @@ User = get_user_model()
 
 class Portfolio(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    total = models.DecimalField(max_digits=15, decimal_places=7,default=0.0)
+    total = models.DecimalField(max_digits=15, decimal_places=7, default=0.0)
     appreciation = models.DecimalField(max_digits=15, decimal_places=7, default=0.0)
     title = models.CharField(max_length=100, default=f"carteira")
     followers = models.DecimalField(max_digits=10,decimal_places=0,default=0)
@@ -20,9 +20,6 @@ class Portfolio(models.Model):
     def get_all_assets(self):
         return PortfolioAsset.objects.filter(portfolio=self)
 
-    def total_recalc(self, mov: int):
-        # TODO: Recalcular o total
-        pass
 
 class PortfolioAsset(models.Model):
     portfolio = models.ForeignKey(Portfolio, on_delete=models.CASCADE)
@@ -53,6 +50,3 @@ class PortfolioAsset(models.Model):
 
 class Following(models.Model):
     pass
-
-class BuyHistory(models.Model):
-    ...
