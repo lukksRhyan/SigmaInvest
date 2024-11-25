@@ -3,10 +3,20 @@ from .models import Portfolio, PortfolioAsset, User
 
 
 class PortfolioAssetSerializer(serializers.ModelSerializer):
+    ticker = serializers.ReadOnlyField(source='asset.ticker')
+    name = serializers.ReadOnlyField(source='asset.name')
+    price = serializers.DecimalField(max_digits=10, decimal_places=2,write_only=True)
+    average_price = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
+
+    def update(self, instance, validated_data):
+        price = validated_data.pop('price')
+        quantity = validated_data.pop('quantity')
+
+        instance.average_price = validated_data.get('average_price', instance.average_price)
 
     class Meta:
         model = PortfolioAsset
-        fields = ['asset','portfolio','quantity','average_price']
+        fields = ['asset','portfolio','price','name','ticker','quantity','average_price']
 
 class PortfolioSerializer(serializers.ModelSerializer):
     username = serializers.ReadOnlyField(source='user.username')
