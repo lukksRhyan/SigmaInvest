@@ -45,7 +45,10 @@ class CustomLoginView(APIView):
         user = authenticate(username=username, password=password)
         if user:
             token = Token.objects.get_or_create(user=user)[0]
-            return Response({'token':token.key, 'key':settings.API_KEY})
+            return Response({
+                'token':token.key,
+                'key':settings.API_KEY
+            })
         return Response({'error':'Invalid Credentials'}, status=400)
 
 class CustomRegisterView(APIView):

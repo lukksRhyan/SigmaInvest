@@ -16,9 +16,10 @@ class AssetClassification(models.Model):
         return self.classification
 
 class Asset(models.Model):
-    ticker = models.CharField(max_length=10, unique=True, null=False)
-    sector = models.ForeignKey(AssetSector, on_delete=models.CASCADE, null=False)
-    classification = models.ForeignKey(AssetClassification, on_delete=models.CASCADE, null=False)
+    ticker = models.CharField(max_length=10, unique=True, null=False)# Equivalente a coin para cripto e currency para moedas
+    fullname = models.CharField(max_length=10, unique=True, null=True)
+    sector = models.ForeignKey(AssetSector, on_delete=models.CASCADE, null=True)
+    classification = models.ForeignKey(AssetClassification, on_delete=models.CASCADE, null=True)
 
 
 
