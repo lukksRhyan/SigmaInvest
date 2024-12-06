@@ -95,6 +95,7 @@ def crypto_data_fill() -> None:
     except Exception as e:
         return JsonResponse({'error': str(e)})
     data = response.json()
-    print(data)
+    for crypto in data:
+        print(crypto)
 
 
