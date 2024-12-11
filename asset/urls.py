@@ -11,7 +11,7 @@ urlpatterns = [
     path('classification/<int:pk>/', AssetClassificationDetail.as_view(), name='asset-classification-detail'),
     #path('search/', asset_search, name='asset-search'),
     #path('fill-crypto/', crypto_data_fill, name='crypto-data-fill'),
-    path('stocks', get_stocks, name='asset-stocks'),
+    path('stocks', GetStocksView.as_view(), name='asset-stocks'),
     path('stocks/<str:ticker>/', stock_search, name='stock-info'),
 
 ]

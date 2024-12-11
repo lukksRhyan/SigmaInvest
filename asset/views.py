@@ -6,7 +6,10 @@ import requests
 from django.http import JsonResponse
 from requests import Response
 from rest_framework import generics
+from rest_framework.views import APIView
 from .models import Asset, AssetSector, AssetClassification
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
 from .serializers import AssetSerializer,AssetSectorSerializer,AssetClassificationSerializer
 
 #Asset
@@ -56,10 +59,13 @@ class AssetClassificationDetail(generics.RetrieveUpdateDestroyAPIView):
         return AssetClassification.objects.all()
 
 
-def get_stocks(request):
-    response = requests.get('https://brapi.dev/api/quote/list', params={'token':settings.API_KEY})
-    stocks = response.json()['stocks']
-    return JsonResponse(stocks, safe=False)
+class GetStocksView(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
+    def post(self,request):
+        response = requests.get('https://brapi.dev/api/quote/list', params={'token':settings.API_KEY})
+        stocks = response.json()['stocks']
+        return JsonResponse(stocks, safe=False)
 
 def stock_search(request,ticker):
     response = requests.get(f'https://brapi.dev/api/quote/{ticker}', params={'token':settings.API_KEY})
