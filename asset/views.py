@@ -1,10 +1,7 @@
-from dbm import error
-from http.client import responses
 
 from django.conf import settings
 import requests
 from django.http import JsonResponse
-from requests import Response
 from rest_framework import generics
 from rest_framework.views import APIView
 from .models import Asset, AssetSector, AssetClassification
@@ -67,13 +64,18 @@ class GetStocksView(APIView):
         stocks = response.json()['stocks']
         return JsonResponse(stocks, safe=False)
 
-def stock_search(request,ticker):
-    response = requests.get(f'https://brapi.dev/api/quote/{ticker}', params={'token':settings.API_KEY})
+class GetStockDetail(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
 
-    if response.status_code == 200:
-        stock = response.json()['results']
-        return JsonResponse(stock, safe=False)
-    return JsonResponse({'error':'erro ao contatar api externa'})
+    def post(self,request):
+        ticker = request.data['ticker']
+        response = requests.get(f'https://brapi.dev/api/quote/{ticker}', params={'token':settings.API_KEY})
+
+        if response.status_code == 200:
+            stock = response.json()['results']
+            return JsonResponse(stock, safe=False)
+        return JsonResponse({'error':'erro ao contatar api externa'})
 
 
 ## DESCONTINUADO DEVIDO A NÃO FUNCIONAMENTO DA API |

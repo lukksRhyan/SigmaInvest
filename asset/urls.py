@@ -12,6 +12,6 @@ urlpatterns = [
     #path('search/', asset_search, name='asset-search'),
     #path('fill-crypto/', crypto_data_fill, name='crypto-data-fill'),
     path('stocks', GetStocksView.as_view(), name='asset-stocks'),
-    path('stocks/<str:ticker>/', stock_search, name='stock-info'),
+    path('stocks/detail/', GetStockDetail.as_view(), name='stock-info'),
 
 ]
