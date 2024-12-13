@@ -59,6 +59,7 @@ class AssetClassificationDetail(generics.RetrieveUpdateDestroyAPIView):
 class GetStocksView(APIView):
     permission_classes = [IsAuthenticated]
     authentication_classes = [TokenAuthentication]
+
     def post(self,request):
         response = requests.get('https://brapi.dev/api/quote/list', params={'token':settings.API_KEY})
         stocks = response.json()['stocks']
