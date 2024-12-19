@@ -125,7 +125,7 @@ def crypto_data_fill(request) -> JsonResponse:
     except Exception as e:
         return JsonResponse({'error': str(e)})
     coins = response.json()['coins']
-    data= []
+    data = []
     for coin in coins:
         try:
             individual_response = requests.get(f'https://brapi.dev/api/v2/crypto/', params={'token': settings.API_KEY,'coin':coin})
