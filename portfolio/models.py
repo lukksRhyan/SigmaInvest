@@ -13,11 +13,14 @@ class Portfolio(models.Model):
     title = models.CharField(max_length=100, default=f"carteira")
     followers = models.DecimalField(max_digits=10,decimal_places=0,default=0)
 
-    def __innit__(self,title):
-        self.title = title or f"carteira de {self.user.username}"
+    def save(self,*args,**kwargs):
+        if not self.title:
+            self.title = f'carteira de {self.user}'
+        super().save(*args,**kwargs)
+
 
     def __str__(self):
-        return f"""{self.title}@{self.user}"""
+        return f"{self.title}@{self.user}"
 
     def get_all_assets(self):
         return PortfolioAsset.objects.filter(portfolio=self)
@@ -25,7 +28,7 @@ class Portfolio(models.Model):
 
 class PortfolioAsset(models.Model):
     portfolio = models.ForeignKey(Portfolio, on_delete=models.CASCADE)
-    asset = models.ForeignKey(Asset, on_delete= models.CASCADE, default=1)
+    asset = models.ForeignKey(Asset, on_delete= models.CASCADE)
     quantity =  models.DecimalField(max_digits=10, decimal_places=2)
     average_price = models.DecimalField(max_digits=10,decimal_places=2)
 
@@ -35,7 +38,7 @@ class PortfolioAsset(models.Model):
     def __str__(self):
         return f"{self.asset}@{self.portfolio}"
 
-    def save(self, *args, **kwargs):
+    def save(self, *args,quantity=0.0, quotation=0.0, **kwargs):
         existing_asset = PortfolioAsset.objects.filter(portfolio=self.portfolio,asset=self.asset).first()
 
         if existing_asset:
@@ -51,5 +54,25 @@ class PortfolioAsset(models.Model):
         else:
             super().save(*args, **kwargs)
 
+        transaction_history = History.objects.create(
+            self.portfolio,
+            self.asset,
+            quantity,
+            quotation,
+        )
+
 class Following(models.Model):
-    pass
+    user = models.ForeignKey(User, on_delete= models.CASCADE)
+    portfolio = models.ForeignKey(Portfolio, on_delete= models.CASCADE)
+    followed_at = models.DateTimeField(auto_now_add=True)
+
+class History(models.Model):
+    portfolio = models.ForeignKey(Portfolio, on_delete=models.CASCADE)
+    asset = models.ForeignKey(Asset, on_delete= models.CASCADE, default=1)
+    date = models.DateField(auto_now_add=True)
+    quantity = models.DecimalField(max_digits=10, decimal_places=2)
+    quotation = models.DecimalField(max_digits=10, decimal_places=2)
+
+    @property
+    def total (self) -> Decimal:
+        return self.quantity * self.quotation
