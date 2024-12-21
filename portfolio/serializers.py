@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Portfolio, PortfolioAsset, User
+from .models import Portfolio, PortfolioAsset, User, History
 
 
 class PortfolioAssetSerializer(serializers.ModelSerializer):
@@ -18,6 +18,27 @@ class PortfolioAssetSerializer(serializers.ModelSerializer):
         model = PortfolioAsset
         fields = ['asset','portfolio','price','name','ticker','quantity','average_price']
 
+class HistorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = History
+        fields = ['portfolio','asset','quantity','quotation']
+
+    def create(self, validated_data):
+        portfolio = validated_data['portfolio']
+        asset = validated_data['asset']
+        quantity = validated_data['quantity']
+        quotation = validated_data['quotation']
+
+        cost = quantity * quotation
+
+        existing_asset = PortfolioAsset.objects.filter(portfolio=portfolio,asset=asset)
+        if existing_asset:
+            total_quantity = existing_asset.quantity + quantity
+            total_cost = existing_asset.total + cost
+
+
+
+        pass
 class PortfolioSerializer(serializers.ModelSerializer):
     username = serializers.ReadOnlyField(source='user.username')
     total = serializers.DecimalField(max_digits=15, decimal_places=7,read_only=True)

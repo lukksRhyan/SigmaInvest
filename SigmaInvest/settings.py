@@ -35,7 +35,6 @@ INSTALLED_APPS = [
     'api.apps.ApiConfig',
     'user.apps.UserConfig',
     'corsheaders',
-    'history.apps.HistoryConfig'
 ]
 
 MIDDLEWARE = [

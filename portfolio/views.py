@@ -4,7 +4,7 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
-from .models import Portfolio,PortfolioAsset
+from .models import Portfolio,PortfolioAsset,History
 from asset.models import Asset
 from .serializers import PortfolioSerializer,PortfolioAssetSerializer
 
@@ -29,7 +29,7 @@ class PortfolioAssetListCreateView(generics.ListCreateAPIView):
     def get_queryset(self):
         return PortfolioAsset.objects.filter(portfolio_id=self.kwargs['portfolio_id'])
 
-    def perform_create(self, serializer):
+    def perform_create(self, serializer):#Como eu altero este método para chamar o History.save()?
         serializer.save()
 
 class PortfolioAssetDetailView(generics.RetrieveUpdateAPIView):
