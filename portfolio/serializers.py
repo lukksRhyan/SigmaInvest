@@ -30,15 +30,21 @@ class HistorySerializer(serializers.ModelSerializer):
         quotation = validated_data['quotation']
 
         cost = quantity * quotation
-
         existing_asset = PortfolioAsset.objects.filter(portfolio=portfolio,asset=asset)
         if existing_asset:
             total_quantity = existing_asset.quantity + quantity
             total_cost = existing_asset.total + cost
+            medium_price = total_quantity/total_cost
 
+            existing_asset.average_price = medium_price
+            existing_asset.quantity = total_quantity
 
+            existing_asset.save()
+        else:PortfolioAsset.objects.create(portfolio=portfolio, asset=asset,quantity=quantity, average_price=cost)#eu vou me livrar desse else
 
-        pass
+        history = History.objects.create(portfolio=portfolio, asset=asset, quantity=quantity, cost=cost)
+        return history
+
 class PortfolioSerializer(serializers.ModelSerializer):
     username = serializers.ReadOnlyField(source='user.username')
     total = serializers.DecimalField(max_digits=15, decimal_places=7,read_only=True)

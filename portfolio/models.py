@@ -2,6 +2,7 @@ from decimal import Decimal
 
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.template.defaultfilters import title
 from django.utils.timezone import now
 
 from asset.models import Asset
@@ -18,6 +19,8 @@ class Portfolio(models.Model):
     def save(self,*args,**kwargs):
         if not self.title and self.user.id:
             self.title = f'carteira de {self.user}'
+            if Portfolio.objects.filter(title= self.title).exists():
+                self.title+='I'
         super().save(*args,**kwargs)
 
 
@@ -31,6 +34,8 @@ class Portfolio(models.Model):
 class PortfolioAsset(models.Model):
     portfolio = models.ForeignKey(Portfolio, on_delete=models.CASCADE)
     asset = models.ForeignKey(Asset, on_delete= models.CASCADE)
+
+    #variaveis
     quantity =  models.DecimalField(max_digits=10, decimal_places=2)
     average_price = models.DecimalField(max_digits=10,decimal_places=2)
     @property

@@ -6,7 +6,8 @@ from rest_framework.views import APIView
 
 from .models import Portfolio,PortfolioAsset,History
 from asset.models import Asset
-from .serializers import PortfolioSerializer,PortfolioAssetSerializer
+from .serializers import PortfolioSerializer, PortfolioAssetSerializer, HistorySerializer
+
 
 class PortfolioListCreateView(generics.ListCreateAPIView):
     serializer_class = PortfolioSerializer
@@ -60,3 +61,12 @@ class CreatePortfolioView(APIView):
         serializer = PortfolioSerializer(portfolio)
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+class HistoryCreateAPIView(generics.ListCreateAPIView):
+    serializer_class = HistorySerializer
+    def post(self, request,*args, **kwargs):
+        serializer = HistorySerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
