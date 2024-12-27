@@ -62,8 +62,14 @@ class CreatePortfolioView(APIView):
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-class HistoryCreateAPIView(generics.ListCreateAPIView):
+
+class HistoryListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = HistorySerializer
+
+    def get_queryset(self):
+        portfolio_id = self.kwargs['portfolio_id']
+        return History.objects.filter(portfolio_id=portfolio_id)
+
     def post(self, request,*args, **kwargs):
         serializer = HistorySerializer(data=request.data)
         if serializer.is_valid():

@@ -23,7 +23,6 @@ class Portfolio(models.Model):
                 self.title+='I'
         super().save(*args,**kwargs)
 
-
     def __str__(self):
         return f"{self.title}@{self.user}"
 
