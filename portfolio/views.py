@@ -67,10 +67,11 @@ class HistoryListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = HistorySerializer
 
     def get_queryset(self):
-        portfolio_id = self.kwargs['portfolio']
-        return History.objects.filter(portfolio_id=portfolio.id)
+        portfolio_id = self.kwargs['portfolioId']
+        return History.objects.filter(portfolio_id=portfolio_id)
 
     def post(self, request,*args, **kwargs):
+        print("fui chamado")
         serializer = HistorySerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
