@@ -71,7 +71,7 @@ class HistoryListCreateAPIView(generics.ListCreateAPIView):
         return History.objects.filter(portfolio_id=portfolio_id)
 
     def post(self, request,*args, **kwargs):
-        print("fui chamado")
+        print(request.data)
         serializer = HistorySerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
