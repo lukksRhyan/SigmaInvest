@@ -35,19 +35,19 @@ class HistorySerializer(serializers.ModelSerializer):
         fields = ['portfolio', 'asset', 'quantity', 'quotation']
 
     def create(self, validated_data):
-        asset = validated_data.get('asset')
+        asset_ticker = validated_data.get('asset')
         portfolio_id = validated_data.get('portfolioId')
         quantity = validated_data.get('quantity')
         quotation = validated_data.get('quotation')
 
-        asset = Asset.objects.get_or_create(ticker=asset.stock)
+        asset, _= Asset.objects.get_or_create(ticker=asset_ticker)
 
         try:
             portfolio = Portfolio.objects.get(id=portfolio_id)
         except Portfolio.DoesNotExist:
             raise ValidationError({'portfolio': 'Portfolio not found.'})
 
-        cost = Decimal(quantity) * Decimal(quotation)
+        cost = Decimal  (quantity) * Decimal(quotation)
 
         # Atualizar ou criar o ativo no portfolio
         try:
