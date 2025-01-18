@@ -10,7 +10,7 @@ urlpatterns =[
     path('<int:pk>/', PortfolioDetailView.as_view(), name='portfolio-detail'),
     path('<int:portfolio_id>/assets', PortfolioAssetListCreateView.as_view(), name='portfolio-asset-list-create'),
     path('<int:portfolio_id>/assets', PortfolioAssetDetailView.as_view(), name='portfolio-asset-detail'),
-    path('<int:portfolio_id>/history',HistoryListCreateAPIView.as_view(),name='portfolio-history'),
+    path('<int:portfolio_id>/history/',HistoryListCreateAPIView.as_view(),name='portfolio-history'),
     path('byuser/',PortfolioByUserView.as_view(), name='portfolio-by-user'),
     path('create/', CreatePortfolioView.as_view(), name='portfolio-create'),
 ]

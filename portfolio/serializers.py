@@ -35,33 +35,30 @@ class HistorySerializer(serializers.ModelSerializer):
         fields = ['portfolio', 'asset', 'quantity', 'quotation']
 
     def create(self, validated_data):
-        portfolio = validated_data.get('portfolio')
-        stock = validated_data.get('asset')
+        asset = validated_data.get('asset')
+        portfolio_id = validated_data.get('portfolioId')
         quantity = validated_data.get('quantity')
         quotation = validated_data.get('quotation')
 
-        if quantity <= 0 or quotation <= 0:
-            raise ValidationError({'detail': 'Quantity and quotation must be positive values.'})
+        asset = Asset.objects.get_or_create(ticker=asset.stock)
 
-        # Buscar ou criar o ativo
-        asset, _ = Asset.objects.get_or_create(ticker=stock)
-
-        # Validar existência do portfolio
-        if not Portfolio.objects.filter(id=portfolio.id).exists():
+        try:
+            portfolio = Portfolio.objects.get(id=portfolio_id)
+        except Portfolio.DoesNotExist:
             raise ValidationError({'portfolio': 'Portfolio not found.'})
 
-        # Calcular custo
         cost = Decimal(quantity) * Decimal(quotation)
 
         # Atualizar ou criar o ativo no portfolio
-        portfolio_asset = PortfolioAsset.objects.filter(portfolio=portfolio, asset=asset).first()
-        if portfolio_asset:
+        try:
+            portfolio_asset = PortfolioAsset.objects.filter(portfolio=portfolio, asset=asset).first()
             total_quantity = portfolio_asset.quantity + quantity
             total_cost = (portfolio_asset.quantity * portfolio_asset.average_price) + cost
             portfolio_asset.average_price = total_cost / total_quantity
             portfolio_asset.quantity = total_quantity
             portfolio_asset.save()
-        else:
+
+        except PortfolioAsset.DoesNotExist:
             PortfolioAsset.objects.create(
                 portfolio=portfolio,
                 asset=asset,

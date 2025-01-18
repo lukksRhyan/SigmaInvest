@@ -11,6 +11,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-eaq+w2j3+y=(=qa9(dw61h=kvm&wr19jy6h%^2h!irv2r@nji9'
 
 API_KEY = config('API_KEY')
+HOST_IP = config('HOST_IP')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
