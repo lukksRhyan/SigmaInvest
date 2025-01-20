@@ -21,6 +21,9 @@ class PortfolioAssetSerializer(serializers.ModelSerializer):
 
         instance.average_price = (instance.average_price * instance.quantity + price * quantity) / (instance.quantity + quantity)
         instance.quantity += quantity
+        portfolio  = instance.portfolio()
+        portfolio.total +=(price * quantity)
+        portfolio.save()
         instance.save()
         return instance
 
@@ -35,36 +38,41 @@ class HistorySerializer(serializers.ModelSerializer):
         fields = ['portfolio', 'asset', 'quantity', 'quotation']
 
     def create(self, validated_data):
-        asset_ticker = validated_data.get('asset')
-        portfolio_id = validated_data.get('portfolioId')
+        portfolio = validated_data.get('portfolio')
+        stock = validated_data.get('asset')
         quantity = validated_data.get('quantity')
         quotation = validated_data.get('quotation')
 
-        asset, _= Asset.objects.get_or_create(ticker=asset_ticker)
+        if quantity <= 0 or quotation <= 0:
+            raise ValidationError({'detail': 'Quantity and quotation must be positive values.'})
 
-        try:
-            portfolio = Portfolio.objects.get(id=portfolio_id)
-        except Portfolio.DoesNotExist:
+        # Buscar ou criar o ativo
+        asset, _ = Asset.objects.get_or_create(ticker=stock)
+
+        # Validar existência do portfolio
+        if not Portfolio.objects.filter(id=portfolio.id).exists():
             raise ValidationError({'portfolio': 'Portfolio not found.'})
 
-        cost = Decimal  (quantity) * Decimal(quotation)
+        # Calcular custo
+        cost = Decimal(quantity) * Decimal(quotation)
 
         # Atualizar ou criar o ativo no portfolio
-        try:
-            portfolio_asset = PortfolioAsset.objects.filter(portfolio=portfolio, asset=asset).first()
+        portfolio_asset = PortfolioAsset.objects.filter(portfolio=portfolio, asset=asset).first()
+        if portfolio_asset:
             total_quantity = portfolio_asset.quantity + quantity
             total_cost = (portfolio_asset.quantity * portfolio_asset.average_price) + cost
             portfolio_asset.average_price = total_cost / total_quantity
             portfolio_asset.quantity = total_quantity
             portfolio_asset.save()
-
-        except PortfolioAsset.DoesNotExist:
+        else:
             PortfolioAsset.objects.create(
                 portfolio=portfolio,
                 asset=asset,
                 quantity=quantity,
                 average_price=quotation
             )
+            portfolio.total += quantity*quotation
+            portfolio.save()
 
         # Criar histórico
         history = History.objects.create(

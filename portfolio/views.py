@@ -70,9 +70,23 @@ class HistoryListCreateAPIView(generics.ListCreateAPIView):
         portfolio_id = self.kwargs['portfolioId']
         return History.objects.filter(portfolio_id=portfolio_id)
 
-    def post(self, request,*args, **kwargs):
-        print(request.data)
-        serializer = HistorySerializer(data=request.data)
+    def post(self, request, *args, **kwargs):
+        data = request.data.copy()
+
+        # Substituir `portfolioId` por `portfolio`
+        data['portfolio'] = data.pop('portfolioId', None)
+
+        # Certificar-se de que `quantity` seja um número
+        data['quantity'] = int(data['quantity'])
+
+
+        # Garantir que o ativo exista
+        asset_ticker = data['asset']
+        asset, _ = Asset.objects.get_or_create(ticker=asset_ticker)
+        data['asset'] = asset.id  # Usar o ID do ativo no serializer
+
+        # Validar os dados ajustados
+        serializer = HistorySerializer(data=data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)

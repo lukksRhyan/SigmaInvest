@@ -1,26 +1,13 @@
+from enum import unique
+
 from django.db import models
 import requests
 import asset.api_connection as api
 # Create your models here.
-class AssetSector(models.Model):
-    sector = models.CharField(max_length=10, unique=True, null=False)
-
-    def __str__(self):
-        return self.sector
-
-
-class AssetClassification(models.Model):
-    classification = models.CharField(max_length=10, unique=True, null=False)
-
-    def __str__(self):
-        return self.classification
-
 class Asset(models.Model):
     ticker = models.CharField(max_length=10, unique=True, null=False)# Equivalente a coin para cripto e currency para moedas
-    fullname = models.CharField(max_length=10, unique=True, null=True)
-    classification = models.ForeignKey(AssetClassification, on_delete=models.CASCADE, null=True)
-
-
+    fullname = models.CharField(max_length=10, unique=False, null=True)
+    sector = models.CharField(max_length=30, unique=False,default='None')
 
     def __str__(self):
         return self.ticker
