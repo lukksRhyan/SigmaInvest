@@ -17,5 +17,12 @@
       <jdbc-url>jdbc:sqlite:C:\Users\Cliente\PycharmProjects\SigmaInvest\db.sqlite3</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="new.sqlite" uuid="27a71129-ef69-42a6-a2f1-89938b13d689">
+      <driver-ref>sqlite.xerial</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+      <jdbc-url>jdbc:sqlite:identifier.sqlite</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>
