@@ -4,7 +4,7 @@ import requests
 from django.http import JsonResponse
 from rest_framework import generics
 from rest_framework.views import APIView
-from .models import Asset
+from .models import Asset, Stock
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from .serializers import AssetSerializer
@@ -36,6 +36,16 @@ class GetStocksView(APIView):
         stocks = response.json()['stocks']
         return JsonResponse(stocks, safe=False)
 
+class GetStocksUpdateView(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
+    def post(self,request):
+        tickers = request.data['tickers']
+        for ticker in tickers:
+            current_stock = {'stock': ticker}
+            response = requests.get(f'https://brapi.dev/api/quote/{ticker}', params={'token':settings.API_KEY})
+            data = response.json()
+            current_stock.update({'close':data['regularMarketPrice'],'name':data['longName'],'logo':data['logourl']})
 class GetStockDetail(APIView):
     permission_classes = [IsAuthenticated]
     authentication_classes = [TokenAuthentication]
