@@ -44,12 +44,11 @@ class GetStocksUpdateView(APIView):
         request_assets = request.data
         updated_assets = []
         for asset in request_assets:
-            current_stock = {'stock': asset['ticker']}
             response = requests.get(f'https://brapi.dev/api/quote/{asset['ticker']}', params={'token':settings.API_KEY})
             data = response.json()['results'][0]
-            print(data)
-            current_stock.update({'ticker':asset['ticker'],'close':data['regularMarketPrice'],'name':data['longName'],'logo':data['logourl']})
-            updated_assets.append(current_stock)
+            asset.update({'ticker':asset['ticker'],'close':data['regularMarketPrice'],'name':data['longName'],'logo':data['logourl']})
+            updated_assets.append(asset)
+        print(updated_assets)
         return JsonResponse(updated_assets, safe=False)
 
 class GetStockDetail(APIView):
