@@ -46,7 +46,11 @@ class PortfolioByUserView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return Portfolio.objects.filter(user=self.request.user.id)
+        portfolios = Portfolio.objects.filter(user=self.request.user.id)
+        for portfolio in portfolios:
+            assets = PortfolioAsset.objects.filter(portfolio_id=portfolio.id)
+            portfolio.update({'assets': assets})
+        return portfolios
 
 class CreatePortfolioView(APIView):
     permission_classes = [IsAuthenticated]
