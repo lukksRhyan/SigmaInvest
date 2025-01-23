@@ -8,5 +8,6 @@ urlpatterns = [
 
     path('stocks', GetStocksView.as_view(), name='asset-stocks'),
     path('stocks/detail/', GetStockDetail.as_view(), name='stock-info'),
+    path('full-info/', GetStocksUpdateView.as_view(), name='full-info'),
 
 ]

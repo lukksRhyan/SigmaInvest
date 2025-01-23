@@ -2,6 +2,8 @@ from decimal import Decimal
 from django.utils import timezone
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
+
+import portfolio
 from asset.models import Asset
 from .models import Portfolio, PortfolioAsset, User, History
 
@@ -90,6 +92,7 @@ class PortfolioSerializer(serializers.ModelSerializer):
     total = serializers.DecimalField(max_digits=15, decimal_places=2, read_only=True)
     appreciation = serializers.DecimalField(max_digits=15, decimal_places=2, read_only=True)
     followers = serializers.DecimalField(max_digits=10, decimal_places=0, read_only=True)
+    assets = serializers.SerializerMethodField()
 
     def update(self, instance, validated_data):
         instance.title = validated_data.get('title', instance.title)
@@ -107,4 +110,8 @@ class PortfolioSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Portfolio
-        fields = ['id', 'user', 'username', 'title', 'total', 'appreciation', 'followers']
+        fields = ['id', 'user', 'username', 'title', 'total', 'appreciation', 'followers','assets']
+
+    def get_assets(self,obj):
+        assets = PortfolioAsset.objects.filter(portfolio=obj)
+        return PortfolioAssetSerializer(assets, many=True).data
