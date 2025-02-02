@@ -1,8 +1,9 @@
 from decimal import Decimal
 from django.utils import timezone
+from django.conf import settings
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
-
+import requests
 import portfolio
 from asset.models import Asset
 from .models import Portfolio, PortfolioAsset, User, History
@@ -13,6 +14,8 @@ class PortfolioAssetSerializer(serializers.ModelSerializer):
     name = serializers.ReadOnlyField(source='asset.name')
     price = serializers.DecimalField(max_digits=10, decimal_places=2, write_only=True)
     average_price = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
+
+
 
     def update(self, instance, validated_data):
         price = validated_data.get('price')
