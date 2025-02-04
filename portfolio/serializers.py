@@ -1,4 +1,6 @@
 from decimal import Decimal
+from os.path import split
+
 from django.utils import timezone
 from django.conf import settings
 from rest_framework import serializers
@@ -25,17 +27,19 @@ class PortfolioAssetSerializer(serializers.ModelSerializer):
             response = requests.get(f'https://brapi.dev/api/quote/{ticker}', params={'token': settings.API_KEY})
             response.raise_for_status()
             data = response.json()['results'][0]
-
+            name = data['shortName'].split()[0]
             close = data.get("regularMarketPrice")
             logo = data.get('logourl')
-            return close,logo
+            return name,close,logo
         except Exception as e:
             print(f"Erro ao buscar api externa: {e}")
             return None,None
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
-        close, logo = self.get_external_data(instance.asset.ticker)
+        name,close, logo = self.get_external_data(instance.asset.ticker)
+        if name is not None:
+            representation['name'] = name
         if close is not None:
             representation['close'] = close
         if logo is not None:
