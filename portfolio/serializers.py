@@ -16,6 +16,38 @@ class PortfolioAssetSerializer(serializers.ModelSerializer):
     average_price = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
 
 
+    class Meta:
+        model = PortfolioAsset
+        fields = ['asset', 'portfolio', 'price', 'name', 'ticker', 'quantity', 'average_price']
+
+    def get_external_data(self,ticker):
+        try:
+            response = requests.get(f'https://brapi.dev/api/quote/{ticker}', params={'token': settings.API_KEY})
+            response.raise_for_status()
+            data = response.json()['results'][0]
+
+            close = data.get("regularMarketPrice")
+            logo = data.get('logourl')
+            return close,logo
+        except Exception as e:
+            print(f"Erro ao buscar api externa: {e}")
+            return None,None
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        close, logo = self.get_external_data(instance.asset.ticker)
+        if close is not None:
+            representation['close'] = close
+        if logo is not None:
+            representation['logo'] = logo
+
+        representation['stock'] = instance.asset.ticker
+        return representation
+
+
+
+
+
 
     def update(self, instance, validated_data):
         price = validated_data.get('price')
@@ -32,9 +64,6 @@ class PortfolioAssetSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
-    class Meta:
-        model = PortfolioAsset
-        fields = ['asset', 'portfolio', 'price', 'name', 'ticker', 'quantity', 'average_price']
 
 
 class HistorySerializer(serializers.ModelSerializer):
