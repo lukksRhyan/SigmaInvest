@@ -156,8 +156,8 @@ class PortfolioSerializer(serializers.ModelSerializer):
 
         return {
                 'assets':serialized_assets,
-                'invested':invested_subtotal,
-                'total':current_subtotal
+            "invested": round(invested_subtotal, 2),
+            "total": round(current_subtotal, 2),
                 }
     def to_representation(self,instance):
         representation = super().to_representation(instance)
