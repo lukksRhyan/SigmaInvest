@@ -30,7 +30,7 @@ class PortfolioAssetListCreateView(generics.ListCreateAPIView):
     def get_queryset(self):
         return PortfolioAsset.objects.filter(portfolio_id=self.kwargs['portfolio_id'])
 
-    def perform_create(self, serializer):#Como eu altero este método para chamar o History.save()?
+    def perform_create(self, serializer):
         serializer.save()
 
 class PortfolioAssetDetailView(generics.RetrieveUpdateAPIView):

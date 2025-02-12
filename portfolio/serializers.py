@@ -81,7 +81,7 @@ class HistorySerializer(serializers.ModelSerializer):
         quantity = validated_data.get('quantity')
         quotation = validated_data.get('quotation')
 
-        if quantity <= 0 or quotation <= 0:
+        if quantity == 0 or quotation <= 0:
             raise ValidationError({'detail': 'Quantity and quotation must be positive values.'})
 
         # Buscar ou criar o ativo
@@ -97,10 +97,16 @@ class HistorySerializer(serializers.ModelSerializer):
         # Atualizar ou criar o ativo no portfolio
         portfolio_asset = PortfolioAsset.objects.filter(portfolio=portfolio, asset=asset).first()
         if portfolio_asset:
+            print(portfolio_asset)
             total_quantity = portfolio_asset.quantity + quantity
+            if total_quantity <= 0:
+                portfolio_asset.delete()
             total_cost = (portfolio_asset.quantity * portfolio_asset.average_price) + cost
             portfolio_asset.average_price = total_cost / total_quantity
             portfolio_asset.quantity = total_quantity
+            portfolio = portfolio_asset.portfolio
+            portfolio.total += total_cost
+            portfolio.save()
             portfolio_asset.save()
         else:
             PortfolioAsset.objects.create(
