@@ -52,6 +52,8 @@ class CreatePortfolioView(APIView):
     permission_classes = [IsAuthenticated]
     authentication_classes = [TokenAuthentication]
 
+    def get(self):
+        pass
     def post(self, request):
         user = request.user
         title = request.data.get('title', f'carteira de {user}')
@@ -59,7 +61,6 @@ class CreatePortfolioView(APIView):
         portfolio = Portfolio.objects.create(user=user,title=title)
 
         serializer = PortfolioSerializer(portfolio)
-
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 

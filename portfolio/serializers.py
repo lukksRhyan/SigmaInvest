@@ -48,11 +48,6 @@ class PortfolioAssetSerializer(serializers.ModelSerializer):
         representation['stock'] = instance.asset.ticker
         return representation
 
-
-
-
-
-
     def update(self, instance, validated_data):
         price = validated_data.get('price')
         quantity = validated_data.get('quantity')
@@ -97,7 +92,7 @@ class HistorySerializer(serializers.ModelSerializer):
         # Atualizar ou criar o ativo no portfolio
         portfolio_asset = PortfolioAsset.objects.filter(portfolio=portfolio, asset=asset).first()
         if portfolio_asset:
-            print(portfolio_asset)
+            #print(portfolio_asset)
             total_quantity = portfolio_asset.quantity + quantity
             if total_quantity <= 0:
                 portfolio_asset.delete()
@@ -105,7 +100,9 @@ class HistorySerializer(serializers.ModelSerializer):
             portfolio_asset.average_price = total_cost / total_quantity
             portfolio_asset.quantity = total_quantity
             portfolio = portfolio_asset.portfolio
+            #print(portfolio)
             portfolio.total += total_cost
+            print(portfolio.total)
             portfolio.save()
             portfolio_asset.save()
         else:
@@ -131,10 +128,8 @@ class HistorySerializer(serializers.ModelSerializer):
 
 class PortfolioSerializer(serializers.ModelSerializer):
     username = serializers.ReadOnlyField(source='user.username')
-    total = serializers.DecimalField(max_digits=15, decimal_places=2, read_only=True)
     appreciation = serializers.DecimalField(max_digits=15, decimal_places=2, read_only=True)
     followers = serializers.DecimalField(max_digits=10, decimal_places=0, read_only=True)
-    assets = serializers.SerializerMethodField()
 
     def update(self, instance, validated_data):
         instance.title = validated_data.get('title', instance.title)
@@ -152,8 +147,24 @@ class PortfolioSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Portfolio
-        fields = ['id', 'user', 'username', 'title', 'total', 'appreciation', 'followers','assets']
+        fields = ['id', 'user', 'username', 'title',  'appreciation', 'followers']
 
     def get_assets(self,obj):
-        assets = PortfolioAsset.objects.filter(portfolio=obj)
-        return PortfolioAssetSerializer(assets, many=True).data
+        serialized_assets = PortfolioAssetSerializer(PortfolioAsset.objects.filter(portfolio=obj), many=True).data
+        invested_subtotal = sum(float(asset['average_price']) * float(asset['quantity']) for asset in serialized_assets)
+        current_subtotal = sum(float(asset['close']) * float(asset['quantity']) for asset in serialized_assets if 'close' in asset)
+
+        return {
+                'assets':serialized_assets,
+                'invested':invested_subtotal,
+                'total':current_subtotal
+                }
+    def to_representation(self,instance):
+        representation = super().to_representation(instance)
+        assets_data = self.get_assets(instance)
+
+        representation['assets'] = assets_data['assets']
+        representation['invested'] = assets_data['invested']
+        representation['total'] = assets_data['total']
+
+        return representation
