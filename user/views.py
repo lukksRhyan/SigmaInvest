@@ -1,5 +1,8 @@
+from datetime import timezone
+
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate
+from django.utils.timezone import now
 from rest_framework.authentication import TokenAuthentication
 from django.conf import settings
 from rest_framework.permissions import IsAuthenticated
@@ -10,6 +13,7 @@ from rest_framework.response import Response
 from portfolio.models import Portfolio, User
 from asset import api_connection
 from portfolio.forms import UserRegisterForm
+from user.models import Profile
 
 
 def main_page(request):
@@ -75,9 +79,14 @@ class UserDetailView(APIView):
 
     def post(self, request, *args, **kwargs):
         user = request.user
+        try:
+            profile = Profile.objects.get(user=user)
+        except Profile.DoesNotExist:
+            profile = Profile.objects.create(user=user,bio="Investidor No sigma Invest")
         user_data= {
             "id":user.id,
             "username":user.username,
             "email":user.email,
+            "profile":profile,
         }
         return Response(user_data)

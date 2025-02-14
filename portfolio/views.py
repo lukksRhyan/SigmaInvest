@@ -6,6 +6,7 @@ from rest_framework.views import APIView
 
 from .models import Portfolio,PortfolioAsset,History
 from asset.models import Asset
+from user.models import User
 from .serializers import PortfolioSerializer, PortfolioAssetSerializer, HistorySerializer
 
 
