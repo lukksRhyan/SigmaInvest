@@ -14,6 +14,7 @@ from portfolio.models import Portfolio, User
 from asset import api_connection
 from portfolio.forms import UserRegisterForm
 from user.models import Profile
+from .serializers import ProfileSerializer
 
 
 def main_page(request):
@@ -79,14 +80,11 @@ class UserDetailView(APIView):
 
     def post(self, request, *args, **kwargs):
         user = request.user
-        try:
-            profile = Profile.objects.get(user=user)
-        except Profile.DoesNotExist:
-            profile = Profile.objects.create(user=user,bio="Investidor No sigma Invest")
+        profile, created = Profile.objects.get_or_create(user=user)
         user_data= {
             "id":user.id,
             "username":user.username,
             "email":user.email,
-            "profile":profile,
+            "profile":ProfileSerializer(profile).data,
         }
         return Response(user_data)

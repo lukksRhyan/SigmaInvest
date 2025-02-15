@@ -7,7 +7,7 @@ User = get_user_model()
 # Create your models here.
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    bio = models.TextField(max_length=500, blank=True)
+    bio = models.TextField(max_length=500, blank=True, default="Investidor na SigmaInvest")
     user_since = models.DateField(default=now)
     @property
     def user_portfolios(self):

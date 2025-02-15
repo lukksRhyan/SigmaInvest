@@ -36,20 +36,6 @@ class GetStocksView(APIView):
         stocks = response.json()['stocks']
         return JsonResponse(stocks, safe=False)
 
-class GetStocksUpdateView(APIView):
-    permission_classes = [IsAuthenticated]
-    authentication_classes = [TokenAuthentication]
-
-    def post(self,request):
-        request_assets = request.data
-        updated_assets = []
-        for asset in request_assets:
-            response = requests.get(f'https://brapi.dev/api/quote/{asset['ticker']}', params={'token':settings.API_KEY})
-            data = response.json()['results'][0]
-            asset.update({'stock':asset['ticker'],'ticker':asset['ticker'],'close':data['regularMarketPrice'],'name':data['longName'],'logo':data['logourl']})
-            updated_assets.append(asset)
-        print(updated_assets)
-        return JsonResponse(updated_assets, safe=False)
 
 class GetStockDetail(APIView):
     permission_classes = [IsAuthenticated]
