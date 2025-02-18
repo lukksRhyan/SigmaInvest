@@ -15,7 +15,7 @@ API_KEY = config('API_KEY')
 HOST_IP = config('HOST_IP')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 CORS_ALLOW_ALL_ORIGINS = True
