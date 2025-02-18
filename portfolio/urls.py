@@ -1,8 +1,4 @@
-from idlelib import history
-
 from django.urls import path
-
-import portfolio
 from .views import *
 
 urlpatterns =[
