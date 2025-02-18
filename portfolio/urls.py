@@ -1,5 +1,6 @@
 from django.urls import path
-from .views import *
+from .views import PortfolioListCreateView, PortfolioDetailView, PortfolioAssetListCreateView, PortfolioAssetDetailView, \
+    HistoryListCreateAPIView, PortfolioByUserView, CreatePortfolioView
 
 urlpatterns =[
     path('', PortfolioListCreateView.as_view(), name='portfolio-list-create'),
