@@ -8,7 +8,7 @@ User = get_user_model()
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     bio = models.TextField(max_length=500, blank=True, default="Investidor na SigmaInvest")
-    user_since = models.DateField(default=now)
+    user_since = models.DateTimeField(default=now)
     @property
     def user_portfolios(self):
         return Portfolio.objects.filter(user=self.user)
