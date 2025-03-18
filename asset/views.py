@@ -26,7 +26,6 @@ class AssetDetail(generics.RetrieveUpdateDestroyAPIView):
     def get_queryset(self):
         return Asset.objects.all()
 
-
 class GetStocksView(APIView):
     permission_classes = [IsAuthenticated]
     authentication_classes = [TokenAuthentication]
