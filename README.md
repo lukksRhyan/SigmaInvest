@@ -1,4 +1,4 @@
-# SigmaInvest(Back-end)
+# 📈SigmaInvest(Back-end)
 ## Plataforma online para organizar, acompanhar e compartilhar seus investimentos
 Este projeto foi criado para a disciplina de Analise e projeto de sistemas do 6ºperíodo do curso Sistemas para Internet do Insituto Federal de Educação, Ciência e Tecnologia Campus Salgueiro.
 
